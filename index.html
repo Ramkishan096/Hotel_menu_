@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hotel Menu</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>🍽️ Hotel Menu</h1>
+
+<input type="text" id="search" placeholder="Search food...">
+
+<div id="menu-container"></div>
+
+<h2>🛒 Cart</h2>
+<ul id="cart"></ul>
+<p>Total: ₹<span id="total">0</span></p>
+
+<button onclick="payNow()">Pay Now</button>
+
+<!-- PAYMENT MODAL -->
+<div id="paymentModal" class="modal">
+    <div class="modal-content">
+        <h2>Scan & Pay</h2>
+
+        <img src="my QR.jpeg" class="qr">
+
+        <p id="timer">05:00</p>
+
+        <button onclick="closePayment()">Cancel</button>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
