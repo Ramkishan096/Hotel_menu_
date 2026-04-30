@@ -13,6 +13,34 @@ const menu = [
 let cart = [];
 let countdown;
 
+// LOGIN
+function login() {
+    const user = document.getElementById("username").value;
+    const pass = document.getElementById("password").value;
+
+    if (user === "admin" && pass === "1234") {
+        localStorage.setItem("login", "true");
+        document.getElementById("loginPage").style.display = "none";
+        document.getElementById("mainApp").style.display = "block";
+    } else {
+        alert("Invalid Login ❌");
+    }
+}
+
+function logout() {
+    localStorage.removeItem("login");
+    document.getElementById("loginPage").style.display = "block";
+    document.getElementById("mainApp").style.display = "none";
+}
+
+window.onload = function () {
+    if (localStorage.getItem("login") === "true") {
+        document.getElementById("loginPage").style.display = "none";
+        document.getElementById("mainApp").style.display = "block";
+    }
+    displayMenu(menu);
+};
+
 // DISPLAY MENU
 function displayMenu(items) {
     const container = document.getElementById("menu-container");
@@ -36,11 +64,9 @@ function displayMenu(items) {
 // SEARCH
 document.getElementById("search").addEventListener("input", function () {
     const value = this.value.toLowerCase();
-
     const filtered = menu.filter(item =>
         item.name.toLowerCase().includes(value)
     );
-
     displayMenu(filtered);
 });
 
@@ -108,11 +134,34 @@ function startTimer(seconds) {
     }, 1000);
 }
 
-// CLOSE
+// CLOSE PAYMENT
 function closePayment() {
     document.getElementById("paymentModal").style.display = "none";
     clearInterval(countdown);
 }
 
-// INITIAL LOAD
-displayMenu(menu);
+// PDF BILL
+function downloadBill() {
+    if (cart.length === 0) {
+        alert("Cart is empty!");
+        return;
+    }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    doc.setFontSize(18);
+    doc.text("Hotel Bill Receipt", 20, 20);
+
+    let y = 40;
+    let total = 0;
+
+    cart.forEach((item, index) => {
+        doc.text(`${index + 1}. ${item.name} - ₹${item.price}`, 20, y);
+        total += item.price;
+        y += 10;
+    });
+
+    doc.text(`Total: ₹${total}`, 20, y + 10);
+    doc.save("Hotel_Bill.pdf");
+}

@@ -6,7 +6,20 @@
 </head>
 <body>
 
+<!-- LOGIN PAGE -->
+<div id="loginPage">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Username"><br><br>
+    <input type="password" id="password" placeholder="Password"><br><br>
+    <button onclick="login()">Login</button>
+</div>
+
+<!-- MAIN APP -->
+<div id="mainApp" style="display:none;">
+
 <h1>🍽️ Hotel Menu</h1>
+
+<button onclick="logout()" class="logout">Logout</button>
 
 <input type="text" id="search" placeholder="Search food...">
 
@@ -17,20 +30,23 @@
 <p>Total: ₹<span id="total">0</span></p>
 
 <button onclick="payNow()">Pay Now</button>
+<button onclick="downloadBill()">Download Bill</button>
 
 <!-- PAYMENT MODAL -->
 <div id="paymentModal" class="modal">
     <div class="modal-content">
         <h2>Scan & Pay</h2>
-
-        <img src="my QR.jpeg" class="qr">
-
+        <img src="qr.jpeg" class="qr">
         <p id="timer">05:00</p>
-
         <button onclick="closePayment()">Cancel</button>
     </div>
 </div>
 
+</div>
+
+<!-- jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="script.js"></script>
+
 </body>
 </html>

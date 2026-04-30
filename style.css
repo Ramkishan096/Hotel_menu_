@@ -12,12 +12,20 @@ h1 {
     margin: 0;
 }
 
+#loginPage {
+    margin-top: 100px;
+}
+
+#loginPage input {
+    padding: 10px;
+    width: 200px;
+}
+
+/* SEARCH */
 #search {
     width: 80%;
     padding: 10px;
     margin: 20px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
 }
 
 /* GRID */
@@ -31,8 +39,8 @@ h1 {
 /* CARD */
 .card {
     background: white;
-    border-radius: 10px;
     padding: 10px;
+    border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
@@ -55,6 +63,11 @@ button {
 
 button:hover {
     background: #cc0000;
+}
+
+.logout {
+    float: right;
+    margin: 10px;
 }
 
 /* CART */
