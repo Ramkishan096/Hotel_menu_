@@ -11,15 +11,6 @@ h1 {
     padding: 15px;
 }
 
-#loginPage {
-    margin-top: 100px;
-}
-
-#loginPage input {
-    padding: 10px;
-    width: 220px;
-}
-
 #search {
     padding: 10px;
     width: 80%;
@@ -54,31 +45,14 @@ button {
     cursor: pointer;
 }
 
-.logout {
-    float: right;
-    margin: 10px;
+#cart {
+    list-style: none;
+    padding: 0;
 }
 
-.modal {
-    display: none;
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.6);
-}
-
-.modal-content {
+#cart li {
     background: white;
-    width: 300px;
-    margin: 100px auto;
-    padding: 20px;
-}
-
-.qr {
-    width: 200px;
-}
-
-#timer {
-    color: red;
-    font-size: 20px;
+    margin: 5px;
+    padding: 10px;
+    border-radius: 5px;
 }

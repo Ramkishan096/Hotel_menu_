@@ -1,3 +1,14 @@
+// // ===== DOM =====
+// const loginPage = document.getElementById("loginPage");
+// const mainApp = document.getElementById("mainApp");
+// const username = document.getElementById("username");
+// const password = document.getElementById("password");
+// const menuContainer = document.getElementById("menu-container");
+// const cartList = document.getElementById("cart");
+// const totalSpan = document.getElementById("total");
+// const paymentModal = document.getElementById("paymentModal");
+// const timer = document.getElementById("timer");
+
 // MENU DATA WITH IMAGES
 const menu = [
  {id:1,name:"Paneer Butter Masala",price:220,image:"paneer-butter.jpg"},
@@ -9,46 +20,13 @@ const menu = [
  {id:7,name:"Burger",price:120,image:"Burger.webp"},
  {id:8,name:"Pizza",price:200,image:"Pizza.webp"}
 ];
-
 let cart = [];
-let countdown;
+let paymentDone = false;
 
-// AUTH
-function login() {
-    const email = username.value;
-    const pass = password.value;
-
-    auth.signInWithEmailAndPassword(email, pass)
-        .catch(err => alert(err.message));
-}
-
-function signup() {
-    const email = username.value;
-    const pass = password.value;
-
-    auth.createUserWithEmailAndPassword(email, pass)
-        .then(() => alert("Signup Success"))
-        .catch(err => alert(err.message));
-}
-
-function logout() {
-    auth.signOut();
-}
-
-// AUTO LOGIN
-auth.onAuthStateChanged(user => {
-    if (user) {
-        loginPage.style.display = "none";
-        mainApp.style.display = "block";
-    } else {
-        loginPage.style.display = "block";
-        mainApp.style.display = "none";
-    }
-});
-
-// DISPLAY
+// DISPLAY MENU
 function displayMenu(items) {
-    menu-container.innerHTML = "";
+    const container = document.getElementById("menu-container");
+    container.innerHTML = "";
 
     items.forEach(item => {
         const div = document.createElement("div");
@@ -60,11 +38,19 @@ function displayMenu(items) {
             <p>₹${item.price}</p>
             <button onclick="addToCart(${item.id})">Add</button>
         `;
-        menu-container.appendChild(div);
+
+        container.appendChild(div);
     });
 }
 
-displayMenu(menu);
+// SEARCH
+document.getElementById("search").addEventListener("input", function () {
+    const value = this.value.toLowerCase();
+    const filtered = menu.filter(item =>
+        item.name.toLowerCase().includes(value)
+    );
+    displayMenu(filtered);
+});
 
 // CART
 function addToCart(id) {
@@ -74,19 +60,24 @@ function addToCart(id) {
 }
 
 function updateCart() {
-    cart.innerHTML = "";
+    const cartList = document.getElementById("cart");
+    const totalSpan = document.getElementById("total");
+
+    cartList.innerHTML = "";
     let total = 0;
 
     cart.forEach((item, i) => {
         total += item.price;
 
         const li = document.createElement("li");
-        li.innerHTML = `${item.name} - ₹${item.price}
-        <button onclick="removeItem(${i})">❌</button>`;
-        cart.appendChild(li);
+        li.innerHTML = `
+            ${item.name} - ₹${item.price}
+            <button onclick="removeItem(${i})">❌</button>
+        `;
+        cartList.appendChild(li);
     });
 
-    total.textContent = total;
+    totalSpan.textContent = total;
 }
 
 function removeItem(i) {
@@ -94,52 +85,41 @@ function removeItem(i) {
     updateCart();
 }
 
-// PAYMENT
+// 🔥 RAZORPAY PAYMENT
 function payNow() {
-    if (cart.length === 0) return alert("Cart empty");
+    if (cart.length === 0) {
+        alert("Cart empty");
+        return;
+    }
 
-    paymentModal.style.display = "block";
-    startTimer(300);
+    let total = 0;
+    cart.forEach(item => total += item.price);
 
-    saveOrder();
-}
+    var options = {
+        "key": "rzp_test_1234567890", // 👉 Replace with your Razorpay test key
+        "amount": total * 100,
+        "currency": "INR",
+        "name": "Hotel Menu App",
+        "description": "Food Payment",
 
-// FIRESTORE SAVE
-function saveOrder() {
-    db.collection("orders").add({
-        items: cart,
-        total: total.textContent,
-        time: new Date()
-    });
-}
+        "handler": function (response) {
+            alert("Payment Successful ✅");
 
-// TIMER
-function startTimer(sec) {
-    clearInterval(countdown);
-
-    countdown = setInterval(() => {
-        let m = Math.floor(sec / 60);
-        let s = sec % 60;
-
-        timer.textContent = `${m}:${s<10?"0":""}${s}`;
-        sec--;
-
-        if (sec < 0) {
-            clearInterval(countdown);
-            alert("Expired");
-            closePayment();
+            paymentDone = true;
+            document.getElementById("billBtn").style.display = "inline-block";
         }
-    }, 1000);
+    };
+
+    var rzp = new Razorpay(options);
+    rzp.open();
 }
 
-function closePayment() {
-    paymentModal.style.display = "none";
-    clearInterval(countdown);
-}
-
-// PDF
+// PDF BILL
 function downloadBill() {
-    if (cart.length === 0) return alert("Cart empty");
+    if (!paymentDone) {
+        alert("Complete payment first ❌");
+        return;
+    }
 
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
@@ -158,3 +138,6 @@ function downloadBill() {
     doc.text(`Total: ₹${total}`, 20, y + 10);
     doc.save("bill.pdf");
 }
+
+// INIT
+displayMenu(menu);
