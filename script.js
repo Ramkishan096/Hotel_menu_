@@ -1,8 +1,13 @@
-// MENU
+// MENU DATA WITH IMAGES
 const menu = [
- {id:1,name:"Paneer Butter Masala",price:220,image:"https://source.unsplash.com/300x200/?paneer"},
- {id:2,name:"Biryani",price:180,image:"https://source.unsplash.com/300x200/?biryani"},
- {id:3,name:"Pizza",price:200,image:"https://source.unsplash.com/300x200/?pizza"}
+ {id:1,name:"Paneer Butter Masala",price:220,image:"paneer-butter.jpg"},
+ {id:2,name:"Veg Biryani",price:180,image:"veg biryani.webp"},
+ {id:3,name:"Chicken Biryani",price:250,image:"Chicken Biryani.webp"},
+ {id:4,name:"Masala Dosa",price:90,image:"Masala Dosa.webp"},
+ {id:5,name:"Idli",price:60,image:"Idli.jpg"},
+ {id:6,name:"Samosa",price:20,image:"Samosa.jpg"},
+ {id:7,name:"Burger",price:120,image:"Burger.webp"},
+ {id:8,name:"Pizza",price:200,image:"Pizza.webp"}
 ];
 
 let cart = [];
