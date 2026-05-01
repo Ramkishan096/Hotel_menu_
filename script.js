@@ -1,54 +1,53 @@
-// MENU DATA WITH IMAGES
+// MENU
 const menu = [
- {id:1,name:"Paneer Butter Masala",price:220,image:"paneer-butter.jpg"},
- {id:2,name:"Veg Biryani",price:180,image:"veg biryani.webp"},
- {id:3,name:"Chicken Biryani",price:250,image:"Chicken Biryani.webp"},
- {id:4,name:"Masala Dosa",price:90,image:"Masala Dosa.webp"},
- {id:5,name:"Idli",price:60,image:"Idli.jpg"},
- {id:6,name:"Samosa",price:20,image:"Samosa.jpg"},
- {id:7,name:"Burger",price:120,image:"Burger.webp"},
- {id:8,name:"Pizza",price:200,image:"Pizza.webp"}
+ {id:1,name:"Paneer Butter Masala",price:220,image:"https://source.unsplash.com/300x200/?paneer"},
+ {id:2,name:"Biryani",price:180,image:"https://source.unsplash.com/300x200/?biryani"},
+ {id:3,name:"Pizza",price:200,image:"https://source.unsplash.com/300x200/?pizza"}
 ];
 
 let cart = [];
 let countdown;
 
-// LOGIN
+// AUTH
 function login() {
-    const user = document.getElementById("username").value;
-    const pass = document.getElementById("password").value;
+    const email = username.value;
+    const pass = password.value;
 
-    if (user === "admin" && pass === "1234") {
-        localStorage.setItem("login", "true");
-        document.getElementById("loginPage").style.display = "none";
-        document.getElementById("mainApp").style.display = "block";
-    } else {
-        alert("Invalid Login ❌");
-    }
+    auth.signInWithEmailAndPassword(email, pass)
+        .catch(err => alert(err.message));
+}
+
+function signup() {
+    const email = username.value;
+    const pass = password.value;
+
+    auth.createUserWithEmailAndPassword(email, pass)
+        .then(() => alert("Signup Success"))
+        .catch(err => alert(err.message));
 }
 
 function logout() {
-    localStorage.removeItem("login");
-    document.getElementById("loginPage").style.display = "block";
-    document.getElementById("mainApp").style.display = "none";
+    auth.signOut();
 }
 
-window.onload = function () {
-    if (localStorage.getItem("login") === "true") {
-        document.getElementById("loginPage").style.display = "none";
-        document.getElementById("mainApp").style.display = "block";
+// AUTO LOGIN
+auth.onAuthStateChanged(user => {
+    if (user) {
+        loginPage.style.display = "none";
+        mainApp.style.display = "block";
+    } else {
+        loginPage.style.display = "block";
+        mainApp.style.display = "none";
     }
-    displayMenu(menu);
-};
+});
 
-// DISPLAY MENU
+// DISPLAY
 function displayMenu(items) {
-    const container = document.getElementById("menu-container");
-    container.innerHTML = "";
+    menu-container.innerHTML = "";
 
     items.forEach(item => {
         const div = document.createElement("div");
-        div.classList.add("card");
+        div.className = "card";
 
         div.innerHTML = `
             <img src="${item.image}">
@@ -56,112 +55,101 @@ function displayMenu(items) {
             <p>₹${item.price}</p>
             <button onclick="addToCart(${item.id})">Add</button>
         `;
-
-        container.appendChild(div);
+        menu-container.appendChild(div);
     });
 }
 
-// SEARCH
-document.getElementById("search").addEventListener("input", function () {
-    const value = this.value.toLowerCase();
-    const filtered = menu.filter(item =>
-        item.name.toLowerCase().includes(value)
-    );
-    displayMenu(filtered);
-});
+displayMenu(menu);
 
 // CART
 function addToCart(id) {
-    const item = menu.find(p => p.id === id);
+    const item = menu.find(x => x.id === id);
     cart.push(item);
     updateCart();
 }
 
 function updateCart() {
-    const cartList = document.getElementById("cart");
-    cartList.innerHTML = "";
-
+    cart.innerHTML = "";
     let total = 0;
 
-    cart.forEach((item, index) => {
+    cart.forEach((item, i) => {
         total += item.price;
 
         const li = document.createElement("li");
-        li.innerHTML = `
-            ${item.name} - ₹${item.price}
-            <button onclick="removeItem(${index})">❌</button>
-        `;
-        cartList.appendChild(li);
+        li.innerHTML = `${item.name} - ₹${item.price}
+        <button onclick="removeItem(${i})">❌</button>`;
+        cart.appendChild(li);
     });
 
-    document.getElementById("total").textContent = total;
+    total.textContent = total;
 }
 
-function removeItem(index) {
-    cart.splice(index, 1);
+function removeItem(i) {
+    cart.splice(i, 1);
     updateCart();
 }
 
 // PAYMENT
 function payNow() {
-    if (cart.length === 0) {
-        alert("Cart is empty!");
-        return;
-    }
+    if (cart.length === 0) return alert("Cart empty");
 
-    document.getElementById("paymentModal").style.display = "block";
+    paymentModal.style.display = "block";
     startTimer(300);
+
+    saveOrder();
+}
+
+// FIRESTORE SAVE
+function saveOrder() {
+    db.collection("orders").add({
+        items: cart,
+        total: total.textContent,
+        time: new Date()
+    });
 }
 
 // TIMER
-function startTimer(seconds) {
+function startTimer(sec) {
     clearInterval(countdown);
 
     countdown = setInterval(() => {
-        let min = Math.floor(seconds / 60);
-        let sec = seconds % 60;
+        let m = Math.floor(sec / 60);
+        let s = sec % 60;
 
-        document.getElementById("timer").textContent =
-            `${min}:${sec < 10 ? "0" : ""}${sec}`;
+        timer.textContent = `${m}:${s<10?"0":""}${s}`;
+        sec--;
 
-        seconds--;
-
-        if (seconds < 0) {
+        if (sec < 0) {
             clearInterval(countdown);
-            alert("Time Expired ❌");
+            alert("Expired");
             closePayment();
         }
     }, 1000);
 }
 
-// CLOSE PAYMENT
 function closePayment() {
-    document.getElementById("paymentModal").style.display = "none";
+    paymentModal.style.display = "none";
     clearInterval(countdown);
 }
 
-// PDF BILL
+// PDF
 function downloadBill() {
-    if (cart.length === 0) {
-        alert("Cart is empty!");
-        return;
-    }
+    if (cart.length === 0) return alert("Cart empty");
 
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
-    doc.setFontSize(18);
-    doc.text("Hotel Bill Receipt", 20, 20);
-
-    let y = 40;
+    let y = 20;
     let total = 0;
 
-    cart.forEach((item, index) => {
-        doc.text(`${index + 1}. ${item.name} - ₹${item.price}`, 20, y);
-        total += item.price;
+    doc.text("Hotel Bill", 20, y);
+
+    cart.forEach((item, i) => {
         y += 10;
+        doc.text(`${i+1}. ${item.name} - ₹${item.price}`, 20, y);
+        total += item.price;
     });
 
     doc.text(`Total: ₹${total}`, 20, y + 10);
-    doc.save("Hotel_Bill.pdf");
+    doc.save("bill.pdf");
 }
