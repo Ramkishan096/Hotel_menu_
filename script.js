@@ -1,15 +1,4 @@
-// // ===== DOM =====
-// const loginPage = document.getElementById("loginPage");
-// const mainApp = document.getElementById("mainApp");
-// const username = document.getElementById("username");
-// const password = document.getElementById("password");
-// const menuContainer = document.getElementById("menu-container");
-// const cartList = document.getElementById("cart");
-// const totalSpan = document.getElementById("total");
-// const paymentModal = document.getElementById("paymentModal");
-// const timer = document.getElementById("timer");
-
-// MENU DATA WITH IMAGES
+// MENU DATA
 const menu = [
  {id:1,name:"Paneer Butter Masala",price:220,image:"paneer-butter.jpg"},
  {id:2,name:"Veg Biryani",price:180,image:"veg biryani.webp"},
@@ -20,6 +9,7 @@ const menu = [
  {id:7,name:"Burger",price:120,image:"Burger.webp"},
  {id:8,name:"Pizza",price:200,image:"Pizza.webp"}
 ];
+
 let cart = [];
 let paymentDone = false;
 
@@ -52,13 +42,14 @@ document.getElementById("search").addEventListener("input", function () {
     displayMenu(filtered);
 });
 
-// CART
+// ADD TO CART
 function addToCart(id) {
     const item = menu.find(x => x.id === id);
     cart.push(item);
     updateCart();
 }
 
+// UPDATE CART
 function updateCart() {
     const cartList = document.getElementById("cart");
     const totalSpan = document.getElementById("total");
@@ -80,41 +71,61 @@ function updateCart() {
     totalSpan.textContent = total;
 }
 
+// REMOVE ITEM
 function removeItem(i) {
     cart.splice(i, 1);
     updateCart();
 }
 
-// 🔥 RAZORPAY PAYMENT
+// PAYMENT
 function payNow() {
     if (cart.length === 0) {
         alert("Cart empty");
         return;
     }
 
+    const method = document.getElementById("paymentMethod").value;
+
+    if (method === "") {
+        alert("Please select payment method");
+        return;
+    }
+
     let total = 0;
     cart.forEach(item => total += item.price);
 
-    var options = {
-        "key": "rzp_test_1234567890", // 👉 Replace with your Razorpay test key
-        "amount": total * 100,
-        "currency": "INR",
-        "name": "Hotel Menu App",
-        "description": "Food Payment",
+    // CASH
+    if (method === "cash") {
+        alert("Order placed ✅ (Cash on Delivery)");
 
-        "handler": function (response) {
-            alert("Payment Successful ✅");
+        paymentDone = true;
+        document.getElementById("billBtn").style.display = "inline-block";
+        return;
+    }
 
-            paymentDone = true;
-            document.getElementById("billBtn").style.display = "inline-block";
-        }
-    };
+    // ONLINE (RAZORPAY)
+    if (method === "razorpay") {
+        var options = {
+            "key": "rzp_test_1234567890",
+            "amount": total * 100,
+            "currency": "INR",
+            "name": "Hotel Menu App",
+            "description": "Food Payment",
 
-    var rzp = new Razorpay(options);
-    rzp.open();
+            "handler": function () {
+                alert("Payment Successful ✅");
+
+                paymentDone = true;
+                document.getElementById("billBtn").style.display = "inline-block";
+            }
+        };
+
+        var rzp = new Razorpay(options);
+        rzp.open();
+    }
 }
 
-// PDF BILL
+// DOWNLOAD BILL
 function downloadBill() {
     if (!paymentDone) {
         alert("Complete payment first ❌");

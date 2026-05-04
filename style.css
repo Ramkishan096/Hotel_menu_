@@ -45,6 +45,12 @@ button {
     cursor: pointer;
 }
 
+#paymentMethod {
+    padding: 10px;
+    width: 80%;
+    margin: 10px;
+}
+
 #cart {
     list-style: none;
     padding: 0;

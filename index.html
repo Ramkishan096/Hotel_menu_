@@ -16,14 +16,20 @@
 <ul id="cart"></ul>
 <p>Total: ₹<span id="total">0</span></p>
 
+<h3>Payment Method</h3>
+<select id="paymentMethod">
+    <option value="">Select Payment Method</option>
+    <option value="razorpay">Online Payment</option>
+    <option value="cash">Cash on Delivery</option>
+</select>
+
 <button onclick="payNow()">Pay Now</button>
 
-<!-- Hidden initially -->
 <button id="billBtn" onclick="downloadBill()" style="display:none;">
     Download Bill
 </button>
 
-<!-- Razorpay Script -->
+<!-- Razorpay -->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <!-- jsPDF -->
