@@ -19,22 +19,36 @@
 <h3>Payment Method</h3>
 <select id="paymentMethod">
     <option value="">Select Payment Method</option>
-    <option value="razorpay">Online Payment</option>
+    <option value="upi">UPI Payment</option>
     <option value="cash">Cash on Delivery</option>
 </select>
 
 <button onclick="payNow()">Pay Now</button>
 
+<div id="upiBox" style="display:none;">
+    <h3>UPI Payment</h3>
+    <p>Pay on this UPI ID: <b>rkk04@byl</b></p>
+    <p>Amount: ₹<span id="upiAmount">0</span></p>
+
+    <input type="text" id="utr" placeholder="Enter UTR Number">
+    <input type="file" id="screenshot" accept="image/*">
+
+    <button onclick="submitPaymentProof()">Submit Payment Proof</button>
+</div>
+
+<div id="adminBox" style="display:none;">
+    <h2>Admin Approval</h2>
+    <p><b>UTR:</b> <span id="showUtr"></span></p>
+    <img id="showScreenshot" width="250">
+    <br>
+    <button onclick="approvePayment()">Approve Payment</button>
+</div>
+
 <button id="billBtn" onclick="downloadBill()" style="display:none;">
     Download Bill
 </button>
 
-<!-- Razorpay -->
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
-<!-- jsPDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
 <script src="script.js"></script>
 
 </body>

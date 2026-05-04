@@ -11,10 +11,13 @@ h1 {
     padding: 15px;
 }
 
-#search {
+#search,
+#paymentMethod,
+#utr,
+#screenshot {
     padding: 10px;
     width: 80%;
-    margin: 20px;
+    margin: 10px;
 }
 
 #menu-container {
@@ -39,16 +42,11 @@ h1 {
 button {
     background: #ff4d4d;
     color: white;
-    padding: 8px;
-    border: none;
-    margin: 5px;
-    cursor: pointer;
-}
-
-#paymentMethod {
     padding: 10px;
-    width: 80%;
-    margin: 10px;
+    border: none;
+    margin: 8px;
+    cursor: pointer;
+    border-radius: 5px;
 }
 
 #cart {
@@ -56,9 +54,12 @@ button {
     padding: 0;
 }
 
-#cart li {
+#cart li,
+#upiBox,
+#adminBox {
     background: white;
-    margin: 5px;
-    padding: 10px;
-    border-radius: 5px;
+    margin: 10px auto;
+    padding: 15px;
+    border-radius: 8px;
+    width: 85%;
 }
